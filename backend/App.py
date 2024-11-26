@@ -164,43 +164,52 @@ def analyze():
     
 @app.route('/generate', methods=['POST'])
 def generate():
-    data = request.get_json()
-    chosenWords = data.get('chosenWords')
-    sessionKey = str(data.get('sessionKey'))
-    isVideo = data.get('isVideo')
-    audioOnly = data.get('audioOnly')
+    try:
+        # Parse incoming JSON request
+        data = request.get_json()
+        chosenWords = data.get('chosenWords')
+        sessionKey = str(data.get('sessionKey'))
+        isVideo = data.get('isVideo')
+        audioOnly = data.get('audioOnly')
 
-    # Determine source and final file paths
-    sourcePath = check_file(sessionKey)
-    if sourcePath is None:
-        raise Exception("Source not found!")
-    finalPath = ''
-    if isVideo and not audioOnly:
-        finalPath = 'tmp/' + sessionKey + "/final.mp4"
-        generateVideo(sessionKey, chosenWords, sourcePath)
-    else:
-        finalPath = 'tmp/' + sessionKey + "/final.wav"
-        generateAudio(sessionKey, chosenWords, sourcePath)
-    
-    # Read the MP4 or WAV file content from the file path
-    file_content = read_file_content(finalPath)
+        # Determine source and final file paths
+        sourcePath = check_file(sessionKey)
+        if sourcePath is None:
+            return jsonify({"error": "Source file not found!"}), 404
 
-    # Encode the file content as base64
-    encoded_file_content = base64.b64encode(file_content).decode('utf-8')
-    
-    # Set response headers
-    headers = {
-        'Content-Type': mimetypes.guess_type(finalPath)[0],  # Change to 'video/mp4' for MP4 files
-        'Content-Disposition': 'attachment; filename="output.wav"'  # Adjust filename as needed
-    }
+        finalPath = ''
+        if isVideo and not audioOnly:
+            finalPath = f'tmp/{sessionKey}/final.mp4'
+            generateVideo(sessionKey, chosenWords, sourcePath)
+        else:
+            finalPath = f'tmp/{sessionKey}/final.wav'
+            generateAudio(sessionKey, chosenWords, sourcePath)
+        
+        # Ensure the generated file exists
+        if not os.path.exists(finalPath):
+            return jsonify({"error": f"File not found: {finalPath}"}), 404
+        
+        # Read the file content
+        file_content = read_file_content(finalPath)
 
-    # Return the HTTP response
-    return {
-        'statusCode': 200,
-        'headers': headers,
-        'body': encoded_file_content,
-        'isBase64Encoded': True
-    }
+        # Encode the file content as base64
+        encoded_file_content = base64.b64encode(file_content).decode('utf-8')
+
+        # Determine content type based on file extension
+        mime_type, _ = mimetypes.guess_type(finalPath)
+        if not mime_type:
+            mime_type = 'application/octet-stream'  # Fallback MIME type
+
+        # Prepare the response
+        return jsonify({
+            'statusCode': 200,
+            'headers': {'Content-Type': mime_type},
+            'body': encoded_file_content
+        })
+
+    except Exception as e:
+        # Catch any exceptions and return an error response
+        return jsonify({"error": str(e)}), 500
 
 
 if __name__ == '__main__':

@@ -61,7 +61,6 @@
         try {
             loadingGenerate = true;
             showToastAlert("Generating clip...");
-            // yptaiGenerate lambda function
             const response = await fetch(
                 BACKEND_BASE + "/generate",
                 {
@@ -80,19 +79,37 @@
                 },
             );
 
-            // Turn response into a blob and add to page
-            let buffer = await response.arrayBuffer();
+            // Parse the JSON response
+            const result = await response.json();
+            
+            if (result.error) {
+                console.error("Error:", result.error);
+                loadingGenerate = false;
+                return;
+            }
+
+            // Extract the base64-encoded content
+            const base64Content = result.body;  // This is the base64-encoded string
+
+            // Decode the base64 string into binary data
+            const decodedData = atob(base64Content); // Base64 to binary string
+            const byteArray = new Uint8Array(decodedData.length);
+
+            // Convert binary string to a byte array
+            for (let i = 0; i < decodedData.length; i++) {
+                byteArray[i] = decodedData.charCodeAt(i);
+            }
             let blob;
             let url;
-
+        
             //TODO Check actual file types
             if (!audioOnly) {
-                blob = new Blob([buffer], { type: "video/mp4" });
+                blob = new Blob([byteArray], { type: "video/mp4" });
                 url = window.URL.createObjectURL(blob);
                 videoElement.src = url;
                 hideVideo = false;
             } else {
-                blob = new Blob([buffer], { type: "audio/wav" });
+                blob = new Blob([byteArray], { type: "audio/wav" });
                 url = window.URL.createObjectURL(blob);
                 audioElement.src = url;
                 hideAudio = false;
