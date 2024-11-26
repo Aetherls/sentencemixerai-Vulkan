@@ -176,10 +176,10 @@ def generate():
         raise Exception("Source not found!")
     finalPath = ''
     if isVideo and not audioOnly:
-        finalPath = 'tmp/' + sessionKey + "final.mp4"
+        finalPath = 'tmp/' + sessionKey + "/final.mp4"
         generateVideo(sessionKey, chosenWords, sourcePath)
     else:
-        finalPath = 'tmp/' + sessionKey + "final.wav"
+        finalPath = 'tmp/' + sessionKey + "/final.wav"
         generateAudio(sessionKey, chosenWords, sourcePath)
     
     # Read the MP4 or WAV file content from the file path
