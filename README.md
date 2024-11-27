@@ -1,5 +1,6 @@
 # sentencemixerai
 
+Extract words from video or audio. Mix the words around. Generate a new video or audio clip.
 This repository is the local version of [sentencemixerai.vercel.app](https://sentencemixerai.vercel.app), which allows you to run both the site and server on your own hardware. The AI server can run on either CPU or GPU, but expect significantly faster results when using a GPU.
 
 ---
@@ -60,21 +61,18 @@ The installation of PyTorch depends on your operating system and hardware. To in
 
 Once the installation is complete, follow these steps to run the application.
 
-1. Start the Backend
-Navigate to the `backend/` directory (if you're not already there) and run the backend server:
+1. Navigate to the `backend/` directory (if you're not already there) and run the backend server:
 
 ```bash
 python Server.py
 ```
 
-2. Start the Frontend
-In a separate terminal window, navigate to the frontend/ directory and start the frontend development server:
+2. In a separate terminal window, navigate to the frontend/ directory and start the frontend development server:
 ```bash
 npm run dev
 ```
 
-3. Open the application
-Once both the backend and frontend are running, open your web browser and navigate to:
+3. Once both the backend and frontend are running, open your web browser and navigate to:
 http://localhost:5173/
 
 ### Donations
