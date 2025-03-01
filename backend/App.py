@@ -19,11 +19,11 @@ cors = CORS(app, resources={
     }
 })
 
-# Modified to use DirectML for AMD GPU
+# Modified to use DirectML for AMD GPU support
 import torch_directml
 device = torch_directml.device() if torch_directml.is_available() else "cpu"
-batch_size = 16  # Reduce if low on GPU memory
-compute_type = "float32"  # DirectML works better with float32
+batch_size = 16  # Adjust this value based on your GPU memory
+compute_type = "float32"  # DirectML works better with float32 on AMD
 
 def check_file(session_key):
     # Path to the directory where the file should be
