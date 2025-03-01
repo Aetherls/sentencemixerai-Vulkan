@@ -1,0 +1,8 @@
+torch-directml
+git+https://github.com/m-bain/whisperx.git
+moviepy
+flask
+flask_cors
+schedule
+waitress
+numpy
