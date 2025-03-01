@@ -19,10 +19,11 @@ cors = CORS(app, resources={
     }
 })
 
-
-device = "cuda" if torch.cuda.is_available() else "cpu"
+# Modified to use DirectML for AMD GPU
+import torch_directml
+device = torch_directml.device() if torch_directml.is_available() else "cpu"
 batch_size = 16  # Reduce if low on GPU memory
-compute_type = "float16" if device == 'cuda' else 'float32'  # Change to "int8" if low on GPU memory (may reduce accuracy)
+compute_type = "float32"  # DirectML works better with float32
 
 def check_file(session_key):
     # Path to the directory where the file should be
