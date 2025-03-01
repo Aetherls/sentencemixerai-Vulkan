@@ -1,13 +1,14 @@
 # sentencemixerai
 
 Extract words from video or audio. Mix the words around. Generate a new video or audio clip.
-This repository is the local version of [sentencemixerai.vercel.app](https://sentencemixerai.vercel.app), which allows you to run both the site and server on your own hardware. The AI server can run on either CPU or GPU, but expect significantly faster results when using a GPU.
+This repository is the local version of [sentencemixerai.vercel.app](https://sentencemixerai.vercel.app), which allows you to run both the site and server on your own hardware.
 
 ---
 
 ## Prerequisites
 
 - **Python**: Version 3.8 or higher is required.
+- **Windows**: This version is optimized for Windows with AMD GPU support
 
 ---
 
@@ -15,66 +16,71 @@ This repository is the local version of [sentencemixerai.vercel.app](https://sen
 
 Follow these steps to set up both the backend and frontend.
 
-### 1. Install PyTorch
+### 1. Install PyTorch and DirectML
 
-The installation of PyTorch depends on your operating system and hardware. To install PyTorch, follow the official instructions on the [PyTorch Get Started page](https://pytorch.org/get-started/locally/).
+1. Install PyTorch (CPU version):
+```bash
+pip install torch torchvision torchaudio
+```
 
----
+2. Install DirectML for AMD GPU support:
+```bash
+pip install torch-directml
+```
 
 ### 2. Install Backend
 
 1. Navigate to the `backend/` directory:
-    ```bash
-    cd backend
-    ```
+```bash
+cd backend
+```
 
-2. (Optional but recommended) Create and activate a Python virtual environment:
-    ```bash
-    python -m venv .venv
-    source .venv/bin/activate  # On Windows use .venv\Scripts\activate
-    ```
+2. Create and activate a Python virtual environment:
+```bash
+python -m venv .venv
+.venv\Scripts\activate
+```
 
 3. Install the required Python dependencies:
-    ```bash
-    pip install git+https://github.com/m-bain/whisperx.git
-    pip install moviepy==1.0.3 flask flask_cors schedule waitress
-    pip install numpy==1.26.4
-    ```
-
----
+```bash
+pip install -r requirements.txt
+```
 
 ### 3. Install Frontend
 
 1. Navigate to the `frontend/` directory:
-    ```bash
-    cd frontend
-    ```
+```bash
+cd frontend
+```
 
 2. Install the necessary Node.js dependencies:
-    ```bash
-    npm install
-    ```
+```bash
+npm install
+```
 
 ---
 
 ## Usage
 
-Once the installation is complete, follow these steps to run the application.
-
-1. Navigate to the `backend/` directory (if you're not already there) and run the backend server:
-
+1. Start the backend server:
 ```bash
+cd backend
 python Server.py
 ```
 
-2. In a separate terminal window, navigate to the frontend/ directory and start the frontend development server:
+2. In a separate terminal, start the frontend:
 ```bash
+cd frontend
 npm run dev
 ```
 
-3. Once both the backend and frontend are running, open your web browser and navigate to:
+3. Open your browser and navigate to:
 http://localhost:5173/
+
+### AMD GPU Notes
+- The application uses DirectML for AMD GPU acceleration
+- First run might be slower due to shader compilation
+- If you experience any issues, try updating your AMD drivers
 
 ### Donations
 [![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/E1E616MPXB)
-
